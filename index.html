@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CodePath AI — Encyclopedia</title>
+<meta name="description" content="CodePath AI — интерактивная энциклопедия языков программирования: Python, JavaScript, C++, C#, Java, Kotlin и другие.">
+<meta name="keywords" content="программирование, обучение, Python, C++, JavaScript, справочник">
+  
+  <style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,sans-serif}
+body{background:#090d16;color:#f8fafc;min-height:100vh;display:flex;flex-direction:column}
+header,footer{background:#111827;padding:12px 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;border:0 solid #1e293b}
+header{border-bottom-width:1px}footer{border-top-width:1px;margin-top:auto}
+main{flex:1;max-width:920px;width:100%;margin:0 auto;padding:20px 14px}
+.box{background:#111827;border:1px solid #1e293b;border-radius:14px;padding:24px;text-align:center}
+form{display:flex;max-width:460px;margin:14px auto 0;gap:8px}
+input,select{background:#090d16;border:1px solid #38bdf8;color:#fff;padding:10px;border-radius:8px;font-size:15px;outline:none}
+input{flex:1}
+.btn{background:#38bdf8;color:#090d16;border:none;padding:9px 14px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
+.btn-p{background:#6366f1;color:#fff;width:100%}.btn-g{background:#22c55e;color:#090d16}.btn-r{background:#ef4444;color:#fff}.btn-d{background:#1e293b;color:#fff;border:1px solid #334155}
+.card{background:#1e293b;border:1px solid #6366f1;border-radius:12px;padding:16px;max-width:460px;margin:16px auto 0;text-align:left}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center;padding:16px;z-index:99}
+.m-box{background:#111827;border:2px solid #f59e0b;border-radius:14px;max-width:420px;width:100%;padding:20px;text-align:center}
+.wiki{line-height:1.8;font-size:15px;color:#e2e8f0;text-align:left}
+.wiki h3{color:#38bdf8;font-size:18px;margin:24px 0 8px;border-bottom:1px solid #1e293b;padding-bottom:4px}
+.wiki p{margin-bottom:12px}
+.wiki code{background:#1e293b;color:#4ade80;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:13px}
+.apps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px}
+.appi{background:#090d16;border:1px solid #334155;padding:10px;border-radius:8px;font-size:13px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <b style="color:#38bdf8;font-size:20px;cursor:pointer" onclick="home()">⚡ CodePath AI</b>
+  <span id="hBar" style="font-size:12px;color:#94a3b8">History: empty</span>
+</header>
+<main>
+  <div id="vS" class="box">
+    <h2 id="uT">Which programming language do you want to learn?</h2>
+    <p style="color:#94a3b8;font-size:13px;margin-top:6px">Python, JS, HTML, CSS, C++, C#, C, Java, Kotlin, Swift, Go, Rust, PHP, SQL, TypeScript, Ruby, Dart, Bash, R, Lua, Assembly</p>
+    <form onsubmit="event.preventDefault();find()">
+      <input id="q" placeholder="Enter in English...">
+      <button type="submit" class="btn" id="uF">Search</button>
+    </form>
+    <div id="res"></div>
+  </div>
+  <div id="vL" style="display:none">
+    <button class="btn btn-d" style="margin-bottom:10px" id="uB" onclick="home()">← Back</button>
+    <div class="box" style="text-align:left" id="lArea"></div>
+  </div>
+</main>
+<div class="modal" id="wM">
+  <div class="m-box">
+    <h3 style="color:#fbbf24;margin-bottom:8px" id="uWH">⚠️ Are you sure?</h3>
+    <p id="uWP" style="font-size:14px;margin-bottom:14px"></p>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn btn-g" id="uNo" onclick="goRec()">No</button>
+      <button class="btn btn-r" id="uYes" onclick="goTarget()">Yes</button>
+    </div>
+  </div>
+</div>
+<footer>
+  <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-size:12px">
+    <b style="color:#38bdf8" id="uD">Support:</b>
+   <!--
+    <code id="c1">2200 7000 0000 0000</code>
+    <button class="btn" style="padding:4px 8px;font-size:11px" onclick="cp('c1',this)">Copy Card</button>
+    <code id="c2">+7 (999) 000-00-00</code>
+    -->
+    <button class="btn" style="padding:4px 8px;font-size:11px" onclick="cp('c2',this)">Copy Phone</button>
+  </div>
+  <select id="lSel" onchange="setL(this.value)">
+    <option value="en" selected>🇺🇸 English (US)</option>
+    <option value="ru">🇷🇺 Русский (RU)</option>
+    <option value="fr">🇫🇷 Français (FR)</option>
+    <option value="zh">🇨🇳 中文 (Китайский)</option>
+    <option value="ja">🇯🇵 日本語 (Японский)</option>
+    <option value="es">🇲🇽 Español (Мексика)</option>
+    <option value="ar">🇸🇦 العربية (Арабский)</option>
+    <option value="kk">🇰🇿 Қазақша (Казахский)</option>
+    <option value="de">🇩🇪 Deutsch (Немецкий)</option>
+    <option value="ko">🇰🇷 한국어 (Корейский)</option>
+  </select>
+</footer>
+<script>
+let L='en',H=[],tId=0,rId=0,cur=null;
+const T={
+  en:{h0:'History: empty',h1:'Studied: ',t:'Which programming language do you want to learn?',f:'Search',o:'Open Full Article →',b:'← Back',nf:'Not found',wh:'⚠️ Are you sure?',wn:'{L} is hard for beginners! Start with {R}?',wp:'You tried {P}, {L} is hard. Learn {R} first?',no:'No, choose {R}',yes:'Yes, open {L}',ap:'📱 Recommended Apps:',w:'💻 Windows / PC:',a:'🤖 Android:',i:'🍎 iOS:',d:'Support:'},
+  ru:{h0:'История: пусто',h1:'Изучено: ',t:'Какой язык программирования вы хотите изучить?',f:'Найти',o:'Открыть полную статью →',b:'← Назад',nf:'Не найдено',wh:'⚠️ Вы уверены?',wn:'{L} сложный для новичка! Начать с {R}?',wp:'После {P} язык {L} сложный. Сначала изучить {R}?',no:'Нет, выбрать {R}',yes:'Да, открыть {L}',ap:'📱 Рекомендуемые приложения:',w:'💻 Windows / ПК:',a:'🤖 Android:',i:'🍎 iOS:',d:'Донат:'},
+  fr:{h0:'Historique: vide',h1:'Étudié: ',t:'Quel langage voulez-vous apprendre ?',f:'Chercher',o:'Ouvrir l’article →',b:'← Retour',nf:'Introuvable',wh:'⚠️ Êtes-vous sûr ?',wn:'{L} est difficile ! Commencer par {R} ?',wp:'Après {P}, {L} est dur. Essayer {R} ?',no:'Non, choisir {R}',yes:'Oui, ouvrir {L}',ap:'📱 Applications :',w:'💻 Windows/PC :',a:'🤖 Android :',i:'🍎 iOS :',d:'Soutenir:'},
+  zh:{h0:'历史记录：空',h1:'已学习：',t:'你想学习哪种编程语言？',f:'搜索',o:'打开完整百科 →',b:'← 返回',nf:'未找到',wh:'⚠️ 你确定吗？',wn:'{L} 太难了！建议先从 {R} 开始？',wp:'学过 {P} 后，{L} 仍然很难。先学 {R} 吗？',no:'不，选择 {R}',yes:'是的，打开 {L}',ap:'📱 推荐软件：',w:'💻 Windows / 电脑：',a:'🤖 Android：',i:'🍎 iOS：',d:'支持项目：'},
+  ja:{h0:'履歴：なし',h1:'学習済み：',t:'どのプログラミング言語を学びたいですか？',f:'検索',o:'記事を開く →',b:'← 戻る',nf:'見つかりません',wh:'⚠️ 本当によろしいですか？',wn:'{L} は難しいです！まず {R} から始めますか？',wp:'{P} の後でも {L} は難関です。先に {R} を学びますか？',no:'いいえ、{R} を選ぶ',yes:'はい、{L} を開く',ap:'📱 おすすめアプリ：',w:'💻 Windows / PC：',a:'🤖 Android：',i:'🍎 iOS：',d:'サポート：'},
+  es:{h0:'Historial: vacío',h1:'Estudiado: ',t:'¿Qué lenguaje de programación quieres aprender?',f:'Buscar',o:'Abrir artículo →',b:'← Volver',nf:'No encontrado',wh:'⚠️ ¿Estás seguro?',wn:'¡{L} es difícil! ¿Comenzar con {R}?',wp:'Ya probaste {P}, pero {L} es complejo. ¿Aprender {R} primero?',no:'No, elegir {R}',yes:'Sí, abrir {L}',ap:'📱 Aplicaciones:',w:'💻 Windows / PC:',a:'🤖 Android:',i:'🍎 iOS:',d:'Apoyar:'},
+  ar:{h0:'السجل: فارغ',h1:'تمت دراسته: ',t:'ما هي لغة البرمجة التي تريد تعلمها؟',f:'بحث',o:'فتح المقال ←',b:'رجوع →',nf:'غير موجود',wh:'⚠️ هل أنت متأكد؟',wn:'لغة {L} صعبة! هل تبدأ بلغة {R}؟',wp:'بعد {P}، لغة {L} صعبة. هل تتعلم {R} أولاً؟',no:'لا، اختر {R}',yes:'نعم، افتح {L}',ap:'📱 التطبيقات:',w:'💻 ويندوز:',a:'🤖 أندرويد:',i:'🍎 آيفون / آيباد:',d:'دعم المشروع:'},
+  kk:{h0:'Тарих: бос',h1:'Оқылған: ',t:'Қай бағдарламалау тілін үйренгіңіз келеді?',f:'Іздеу',o:'Мақаланы ашу →',b:'← Артқа',nf:'Табылмады',wh:'⚠️ Сенімдісіз бе?',wn:'{L} қиын! {R} тілінен бастайсыз ба?',wp:'{P} тілінен кейін {L} қиын. Алдымен {R} үйренесіз бе?',no:'Жоқ, {R} таңдау',yes:'Иә, {L} ашу',ap:'📱 Бағдарламалар:',w:'💻 Windows / ДК:',a:'🤖 Android:',i:'🍎 iOS:',d:'Қолдау:'},
+  de:{h0:'Verlauf: leer',h1:'Gelernt: ',t:'Welche Programmiersprache möchtest du lernen?',f:'Suchen',o:'Artikel öffnen →',b:'← Zurück',nf:'Nicht gefunden',wh:'⚠️ Bist du sicher?',wn:'{L} ist schwer! Mit {R} starten?',wp:'Nach {P} ist {L} schwer. Zuerst {R} lernen?',no:'Nein, {R} wählen',yes:'Ja, {L} öffnen',ap:'📱 Apps:',w:'💻 Windows / PC:',a:'🤖 Android:',i:'🍎 iOS:',d:'Spenden:'},
+  ko:{h0:'기록: 비어 있음',h1:'학습함: ',t:'어떤 프로그래밍 언어를 배우고 싶나요?',f:'검색',o:'문서 열기 →',b:'← 뒤로',nf:'찾을 수 없음',wh:'⚠️ 확실합니까?',wn:'{L} 언어는 어렵습니다! {R} 부터 시작할까요?',wp:'{P} 이후에도 {L} 은 어렵습니다. 먼저 {R} 배울까요?',no:'아니요, {R} 선택',yes:'예, {L} 열기',ap:'📱 추천 앱:',w:'💻 Windows / PC:',a:'🤖 Android:',i:'🍎 iOS:',d:'후원:'}
+};
+const DB=[];
+DB.push({
+  n:'Python',k:['python','py'],h:0,w:'VS Code, PyCharm (free/paid)',a:'Pydroid 3, Termux (free)',i:'Pythonista 3, Carnets',
+  d:{en:'Complete A4 encyclopedia of Python: from print & if/elif/else to Pygame, bots & AI.',ru:'Полная энциклопедия Python на лист А4: от print, переменных и if/elif/else до Pygame, ботов и ИИ.'},
+  art:{
+    en:`<h3>1. History & Virtual Machine</h3><p>Created in 1991 by Guido van Rossum, Python uses 4-space indentation instead of curly braces <code>{}</code>. CPython compiles source code into bytecode executed by the Python Virtual Machine with automatic garbage collection.</p><h3>2. Basics: print, input & Types</h3><p>Output uses <code>print("Hello")</code> and keyboard input uses <code>x = input()</code> (always returns string; convert via <code>int()</code> or <code>float()</code>). Types include <code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>, and <code>None</code>.</p><h3>3. Conditions (if / elif / else) & Loops</h3><p>Branching uses <code>if score >= 90:</code>, <code>elif score >= 70:</code> (else if), and <code>else:</code>, plus <code>match / case</code>. Collections include <b>Lists</b> (<code>[]</code>), <b>Tuples</b> (<code>()</code>), <b>Sets</b>, and <b>Dictionaries</b> (<code>{"hp": 100}</code>), iterated via <code>for</code>, <code>while</code>, and comprehensions.</p><h3>4. Functions, OOP & Error Handling</h3><p>Functions use <code>def</code> and <code>lambda</code>; OOP uses <code>class Hero:</code> with <code>__init__</code>; errors are caught via <code>try / except / finally</code>.</p><h3>5. Pygame, Telegram Bots & AI</h3><p>Via <code>pip</code>, Python powers 2D games in <b>Pygame</b> (60 FPS loops, sprites, collisions), async bots in <b>aiogram</b>, web backends in <b>FastAPI/Django</b>, and neural networks in <b>PyTorch</b>, <b>TensorFlow</b>, and <b>OpenCV</b>.</p>`,
+    ru:`<h3>1. История создания и виртуальная машина</h3><p>Создан в 1991 году Гвидо ван Россумом. Вместо фигурных скобок <code>{}</code> Python использует отступы (4 пробела). Стандартный движок CPython переводит код в байт-код и исполняет его на виртуальной машине с автоматическим сборщиком мусора.</p><h3>2. Базовый уровень: print, input и типы данных</h3><p>Вывод на экран выполняется через <code>print("Привет!")</code>, а ввод с клавиатуры — через <code>name = input()</code> (всегда возвращает строку, для математики её переводят через <code>int()</code> или <code>float()</code>). Основные типы: <code>int</code> (целые числа), <code>float</code> (дробные), <code>str</code> (текст), <code>bool</code> (<code>True/False</code>) и <code>None</code>.</p><h3>3. Ветвление (if / elif / else) и циклы</h3><p>Условия строятся через <code>if score >= 90:</code>, <code>elif score >= 70:</code> (иначе если) и <code>else:</code>, а в новых версиях также через <code>match / case</code>. Встроенные коллекции: <b>списки</b> (<code>[]</code>), <b>кортежи</b> (<code>()</code>), <b>множества</b> и <b>словари</b> (<code>{"hp": 100}</code>). Повторения выполняют циклы <code>for</code>, <code>while</code> и генераторы списков <code>[x*2 for x in range(10)]</code>.</p><h3>4. Функции, классы (ООП) и защита от сбоев</h3><p>Повторяемый код оформляют в функции <code>def attack():</code> и <code>lambda</code>. Крупные проекты строят на классах <code>class Player:</code> с конструктором <code>__init__</code> и наследованием, а защиту от ошибок ввода делают через <code>try / except / finally</code>.</p><h3>5. Продвинутый уровень: Pygame, Telegram-боты, веб и ИИ</h3><p>Через <code>pip</code> подключаются мощные фреймворки: <b>Pygame</b> создаёт 2D-игры с игровым циклом 60 FPS, спрайтами и физикой столкновений; <b>aiogram</b> и <b>pyTelegramBotAPI</b> запускают быстрых Telegram-ботов; <b>Django</b> и <b>FastAPI</b> обслуживают веб-серверы; <b>PyTorch</b>, <b>TensorFlow</b>, <b>Pandas</b> и <b>OpenCV</b> используются для нейросетей и анализа данных.</p>`
+  }
+});
+DB.push({
+  n:'JavaScript',k:['js','javascript'],h:0,w:'VS Code + Chrome, WebStorm',a:'Acode, Spck Editor',i:'Koder, Scriptable',
+  d:{en:'Complete A4 encyclopedia of JavaScript: from variables & if/else to DOM, React, Node.js & WebGL games.',ru:'Полная энциклопедия JavaScript на лист А4: от переменных и if/else if до DOM, React, Node.js и игр.'},
+  art:{
+    en:`<h3>1. V8 Engine & Execution Model</h3><p>Created in 1995 by Brendan Eich. Executed natively in all browsers via JIT engines (V8) using an Event Loop, and on servers via <b>Node.js</b>.</p><h3>2. Variables & Conditions (if / else if / else)</h3><p>Uses <code>const</code> (constants) and <code>let</code> (variables), outputting via <code>console.log()</code>. Branching uses <code>if () {}</code>, <code>else if () {}</code>, <code>else {}</code>, and strict equality <code>===</code>.</p><h3>3. DOM, Events & Async/Await</h3><p>Selects elements via <code>document.querySelector()</code> and handles clicks with <code>addEventListener()</code>. <code>Promises</code>, <code>async / await</code>, and <code>fetch()</code> load API data without freezing the UI.</p><h3>4. React, Node.js & Browser Games</h3><p>Powers web apps (<b>React</b>, <b>Vue</b>, <b>Next.js</b>), servers (<b>Node.js/Express</b>), mobile/desktop apps (<b>React Native</b>, <b>Electron</b>), and 2D/3D WebGL games (<b>Three.js</b>, <b>Phaser</b>).</p>`,
+    ru:`<h3>1. Движок V8 и модель выполнения</h3><p>Создан в 1995 году Бренданом Эйхом. Встроен в каждый браузер (движки V8, SpiderMonkey) и компилируется на лету (JIT), а на серверах работает через <b>Node.js</b>.</p><h3>2. Переменные, строгое сравнение и условия (if / else if / else)</h3><p>Современный JS использует <code>const</code> для констант и <code>let</code> для переменных, вывод в консоль — <code>console.log()</code>. Ветвление строится через <code>if (hp > 50) {}</code>, <code>else if (hp > 0) {}</code> и <code>else {}</code> со строгим сравнением <code>===</code>.</p><h3>3. Управление страницей (DOM) и асинхронность</h3><p>Через <code>document.querySelector()</code> и <code>addEventListener()</code> код меняет HTML/CSS и реагирует на клики без перезагрузки. Асинхронные <code>Promise</code>, <code>async / await</code> и <code>fetch()</code> загружают данные с серверов в фоновом режиме.</p><h3>4. Продвинутый уровень: React, Node.js и игры WebGL</h3><p>На JS создаются сайты (<b>React</b>, <b>Vue</b>, <b>Next.js</b>), серверы (<b>Node.js</b>, <b>Express</b>), программы для ПК и телефонов (<b>Electron</b>, <b>React Native</b>) и 2D/3D-игры в браузере (<b>Three.js</b>, <b>PixiJS</b>, <b>Phaser</b>).</p>`
+  }
+});
+DB.push(
+  {n:'HTML',k:['html'],h:0,w:'VS Code, Sublime Text',a:'Acode, TrebEdit',i:'Koder, Textastic',
+   d:{en:'Complete A4 encyclopedia of HTML5: tags, forms, semantics & Canvas.',ru:'Полная энциклопедия HTML5 на лист А4: базовые теги, формы, семантика и графика Canvas.'},
+   art:{
+     en:`<h3>1. Document Structure & Tags</h3><p>Created in 1991. Starts with <code>&lt;!DOCTYPE html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code>. Uses headings <code>&lt;h1&gt;–&lt;h6&gt;</code>, paragraphs <code>&lt;p&gt;</code>, links <code>&lt;a&gt;</code>, and media <code>&lt;img&gt;</code>, <code>&lt;video&gt;</code>.</p><h3>2. Forms, Semantic HTML5 & Canvas</h3><p>Forms use <code>&lt;input&gt;</code>, <code>&lt;select&gt;</code>, and <code>&lt;button&gt;</code>. Semantic blocks (<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>) and <code>&lt;canvas&gt;</code> power apps and 2D/3D graphics.</p>`,
+     ru:`<h3>1. Структура страницы и теги</h3><p>Создан Тимом Бернерсом-Ли в 1991 году. Делится на <code>&lt;head&gt;</code> (настройки) и <code>&lt;body&gt;</code> (контент). Основные теги: заголовки <code>&lt;h1&gt;–&lt;h6&gt;</code>, абзацы <code>&lt;p&gt;</code>, ссылки <code>&lt;a href&gt;</code> и картинки <code>&lt;img&gt;</code>.</p><h3>2. Формы, семантика HTML5 и графика Canvas</h3><p>Формы ввода строятся через <code>&lt;input&gt;</code>, <code>&lt;select&gt;</code> и <code>&lt;button&gt;</code>. Семантические теги (<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>) и холст <code>&lt;canvas&gt;</code> используются для веб-приложений и браузерных игр.</p>`
+   }
+  },
+  {n:'CSS',k:['css'],h:0,w:'VS Code + Live Server',a:'Acode, Spck Editor',i:'Koder, Textastic',
+   d:{en:'Complete A4 encyclopedia of CSS3: Box Model, Flexbox, Grid & GPU Animations.',ru:'Полная энциклопедия CSS3 на лист А4: блочная модель, Flexbox, Grid и GPU-анимации.'},
+   art:{
+     en:`<h3>1. Box Model, Flexbox & Grid</h3><p>Styles tags and classes (<code>.card</code>) using <code>padding</code>, <code>border</code>, and <code>margin</code>. <code>display: flex</code>, <code>display: grid</code>, and <code>@media</code> build responsive layouts.</p><h3>2. Variables & @keyframes Animations</h3><p>Custom variables (<code>--accent</code>), <code>transition</code>, and <code>@keyframes</code> create smooth 60 FPS GPU animations.</p>`,
+     ru:`<h3>1. Блочная модель, Flexbox и Grid</h3><p>Задаёт цвета, шрифты, отступы (<code>padding</code>, <code>margin</code>) и скругления. Сетки <code>display: flex</code>, <code>display: grid</code> и медиазапросы <code>@media</code> адаптируют сайт под любой экран.</p><h3>2. Переменные и анимации @keyframes</h3><p>Переменные (<code>--color</code>), плавные переходы <code>transition</code> и покадровые анимации <code>@keyframes</code> создают живой интерфейс силами видеочипа без JS.</p>`
+   }
+  }
+);
+DB.push(
+  {n:'TypeScript',k:['ts','typescript'],h:0,w:'VS Code, WebStorm',a:'Acode, Termux',i:'Koder, Textastic',
+   d:{en:'Complete A4 encyclopedia of TypeScript: static types, interfaces & Generics.',ru:'Полная энциклопедия TypeScript на лист А4: статические типы, интерфейсы и дженерики.'},
+   art:{
+     en:`<h3>1. Static Types & Interfaces</h3><p>Adds types (<code>: string</code>, <code>: number</code>) and union types (<code>"admin" | "user"</code>) on top of JS to catch bugs before runtime.</p><h3>2. Generics & Enterprise Apps</h3><p><code>interface</code> defines object contracts and Generics (<code>&lt;T&gt;</code>) power large React, Angular, and Node.js architectures.</p>`,
+     ru:`<h3>1. Статическая типизация и условия</h3><p>Добавляет поверх JS строгие типы (<code>: string</code>, <code>: number</code>) и объединения (<code>"admin" | "user"</code>), находя ошибки до запуска сайта.</p><h3>2. Интерфейсы и дженерики</h3><p>Конструкция <code>interface</code> задаёт точный шаблон объектов, а дженерики (<code>&lt;T&gt;</code>) применяются в крупных проектах на React, Angular и Node.js.</p>`
+   }
+  },
+  {n:'PHP',k:['php'],h:0,w:'VS Code, PhpStorm',a:'Acode, KSWEB',i:'Koder, Textastic',
+   d:{en:'Complete A4 encyclopedia of PHP 8: server logic, PDO & Laravel.',ru:'Полная энциклопедия PHP 8 на лист А4: серверная логика, базы PDO и фреймворк Laravel.'},
+   art:{
+     en:`<h3>1. Server Execution & Syntax</h3><p>Runs on servers inside <code>&lt;?php ?&gt;</code>; variables start with <code>$</code> and branching uses <code>if / elseif / else</code>.</p><h3>2. PDO Databases & Laravel</h3><p>Associative arrays, <b>PDO</b> prepared SQL statements, and frameworks like <b>Laravel</b> and <b>WordPress</b> power over 75% of websites.</p>`,
+     ru:`<h3>1. Серверный движок и синтаксис</h3><p>Выполняется на сервере внутри <code>&lt;?php ?&gt;</code>; переменные начинаются с <code>$</code>, а условия строятся через <code>if / elseif / else</code>.</p><h3>2. Базы данных PDO и Laravel</h3><p>Ассоциативные массивы, защищённые запросы <b>PDO</b> к MySQL и фреймворки <b>Laravel</b> и <b>WordPress</b> лежат в основе миллионов сайтов.</p>`
+   }
+  },
+  {n:'SQL',k:['sql','mysql'],h:0,w:'DBeaver, DataGrip',a:'SQLite Editor, Termux',i:'SQLiteFlow, TablePlus',
+   d:{en:'Complete A4 encyclopedia of SQL: CRUD, CASE WHEN, JOINs & Indexes.',ru:'Полная энциклопедия SQL на лист А4: таблицы, CRUD, условия CASE WHEN, JOIN и индексы.'},
+   art:{
+     en:`<h3>1. Relational Tables & CRUD</h3><p>Manages PostgreSQL, MySQL, and SQLite tables via <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, and <code>DELETE</code>.</p><h3>2. CASE WHEN, Sorting & JOINs</h3><p><code>WHERE</code> filters rows, <code>CASE WHEN / ELSE</code> adds if/else logic, <code>ORDER BY</code> sorts records, and <code>JOIN</code> links tables via indexes.</p>`,
+     ru:`<h3>1. Таблицы и базовые команды</h3><p>Управляет реляционными базами данных (PostgreSQL, MySQL, SQLite) через <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code> и <code>DELETE</code>.</p><h3>2. Условия CASE WHEN, сортировка и JOIN</h3><p><code>WHERE</code> фильтрует строки, блок <code>CASE WHEN / ELSE</code> работает как <code>if / else</code> внутри запроса, <code>ORDER BY</code> сортирует записи, а <code>JOIN</code> объединяет таблицы.</p>`
+   }
+  }
+);
+DB.push(
+  {n:'C++',k:['c++','cpp'],h:1,w:'Visual Studio, CLion',a:'Cxxdroid, Termux',i:'Xcode, OnlineGDB',
+   d:{en:'Complete A4 encyclopedia of C++: pointers, manual memory, STL & Unreal Engine 5.',ru:'Полная энциклопедия C++ на лист А4: строгие типы, указатели, память, STL и Unreal Engine 5.'},
+   art:{
+     en:`<h3>1. Compiled Speed & Conditions</h3><p>Created in 1985 by Bjarne Stroustrup. Compiles to native CPU machine code; uses strict types (<code>int</code>, <code>double</code>), <code>std::cout</code>, and <code>if / else if / else</code>.</p><h3>2. Pointers, Manual Memory & STL</h3><p>Pointers (<code>*</code>) and references (<code>&amp;</code>) access RAM directly; heap memory uses <code>new / delete</code> and smart pointers (<code>std::unique_ptr</code>), alongside <b>STL</b> containers (<code>std::vector</code>).</p><h3>3. Unreal Engine 5 & AAA Games</h3><p>Powers <b>Unreal Engine 5</b>, physics engines (PhysX), Chromium V8, and aerospace firmware.</p>`,
+     ru:`<h3>1. Машинная скорость и строгие типы</h3><p>Создан Бьёрном Страуструпом в 1985 году. Компилируется напрямую в команды процессора без виртуальных машин. Требует строгих типов (<code>int</code>, <code>double</code>, <code>bool</code>), вывода через <code>std::cout</code> и ветвления <code>if / else if / else</code>.</p><h3>2. Указатели (*), память (new / delete) и STL</h3><p>Указатели (<code>*</code>) и ссылки (<code>&amp;</code>) работают напрямую с адресами оперативной памяти RAM. Ручное управление кучей (<code>new / delete</code>), умные указатели и контейнеры <b>STL</b> (<code>std::vector</code>) дают полный контроль над железом.</p><h3>3. Игровые движки и Unreal Engine 5</h3><p>Главный язык для AAA-игр на <b>Unreal Engine 5</b>, физического движка PhysX, ядра браузера Chrome и высоконагруженных систем.</p>`
+   }
+  },
+  {n:'C#',k:['c#','csharp'],h:1,w:'Visual Studio, Rider',a:'Coding C#, C# Shell',i:'Continuous IDE, SoloLearn',
+   d:{en:'Complete A4 encyclopedia of C#: .NET CLR, OOP, LINQ & Unity 3D.',ru:'Полная энциклопедия C# на лист А4: платформа .NET, ООП, запросы LINQ и 3D-игры на Unity.'},
+   art:{
+     en:`<h3>1. .NET CLR & Strict OOP</h3><p>Created by Microsoft in 2000. All code lives in classes/methods with <code>if / else if / else</code>, <code>List&lt;T&gt;</code>, and automatic Garbage Collection.</p><h3>2. LINQ, Async & Unity 3D</h3><p><b>LINQ</b> filters collections in one line, <code>async/await</code> handles networking, and <b>Unity</b> uses C# (<code>MonoBehaviour</code>) for PC, mobile, and VR games alongside <b>ASP.NET Core</b> servers.</p>`,
+     ru:`<h3>1. Платформа .NET и строгий ООП</h3><p>Создан Microsoft в 2000 году. Весь код находится внутри классов, использует условия <code>if / else if / else</code>, коллекции <code>List&lt;T&gt;</code> и автоматический сборщик мусора CLR.</p><h3>2. Запросы LINQ, асинхронность и Unity 3D</h3><p>Технология <b>LINQ</b> фильтрует массивы данных в одну строку, <code>async/await</code> отвечает за сеть, а движок <b>Unity</b> использует C# для создания 2D/3D-игр на ПК, Android и iOS.</p>`
+   }
+  }
+);
+DB.push(
+  {n:'C',k:['c'],h:1,w:'Code::Blocks, VS Code',a:'Cxxdroid, Termux',i:'iSH Shell, Pico',
+   d:{en:'Complete A4 encyclopedia of C: kernels, pointers, char arrays & malloc/free.',ru:'Полная энциклопедия C на лист А4: ядра Linux/Windows, массивы char и malloc/free.'},
+   art:{
+     en:`<h3>1. Hardware Foundation</h3><p>Created in 1972 by Dennis Ritchie for UNIX. Compiles to raw CPU opcodes; uses <code>if / else</code> and <code>printf()</code> with <code>%d</code>.</p><h3>2. Raw Char Arrays & malloc/free</h3><p>Text is raw <code>char[]</code> arrays, and OS RAM is allocated manually via <code>malloc()</code> and freed with <code>free()</code>—powering Linux, Windows, and microcontrollers.</p>`,
+     ru:`<h3>1. Фундамент операционных систем</h3><p>Создан Деннисом Ритчи в 1972 году. Работает максимально близко к процессору; использует <code>if / else</code> и <code>printf()</code> с <code>%d</code>.</p><h3>2. Массивы char и ручная память malloc/free</h3><p>Строки хранятся как массивы символов <code>char[]</code>, а память запрашивается у ОС через <code>malloc()</code> и очищается через <code>free()</code> — на C написаны ядра Linux, Windows и драйверы.</p>`
+   }
+  },
+  {n:'Rust',k:['rust'],h:1,w:'VS Code, RustRover',a:'Termux (rust)',i:'Rust Playground',
+   d:{en:'Complete A4 encyclopedia of Rust: C++ speed with Ownership & Borrow Checker.',ru:'Полная энциклопедия Rust на лист А4: скорость C++, система владения Ownership и Borrow Checker.'},
+   art:{
+     en:`<h3>1. Zero-Crash Speed & Ownership</h3><p>Adopted into the Linux kernel. Variables are immutable by default (<code>mut</code> allows changes); uses <code>if / else if / else</code> and <code>match</code>.</p><h3>2. Borrow Checker</h3><p>Rust’s <b>Ownership</b> and <b>Borrow Checker</b> eliminate memory leaks and crashes at compile time without a garbage collector.</p>`,
+     ru:`<h3>1. Скорость C++ без утечек памяти</h3><p>Включён в ядро Linux и драйверы Windows. Переменные по умолчанию неизменяемы (для изменения нужно слово <code>mut</code>); ветвление строится через <code>if / else if / else</code> и <code>match</code>.</p><h3>2. Система владения (Ownership)</h3><p>Анализатор <b>Borrow Checker</b> исключает сбои памяти ещё на этапе компиляции без сборщика мусора.</p>`
+   }
+  }
+);
+DB.push(
+  {n:'Java',k:['java'],h:0,w:'IntelliJ IDEA, Eclipse',a:'Jvdroid, AIDE',i:'SoloLearn, Java Editor',
+   d:{en:'Complete A4 encyclopedia of Java: JVM, OOP, Multithreading & Minecraft.',ru:'Полная энциклопедия Java на лист А4: виртуальная машина JVM, ООП, многопоточность и Minecraft.'},
+   art:{
+     en:`<h3>1. JVM Portability</h3><p>Created in 1995 ("Write Once, Run Anywhere"). Bytecode runs on any OS via JVM with strict classes and <code>if / else if / else</code>.</p><h3>2. Multithreading, Spring & Minecraft</h3><p><code>ArrayList</code>, <code>HashMap</code>, and <code>Thread</code> power banking servers (<b>Spring Boot</b>) and <b>Minecraft</b> mods.</p>`,
+     ru:`<h3>1. Виртуальная машина JVM</h3><p>Создан в 1995 году. Байт-код работает на любой ОС через JVM; весь код строится на классах, условиях <code>if / else if / else</code> и коллекциях <code>ArrayList</code>.</p><h3>2. Многопоточность, банки и Minecraft</h3><p>Мощная многопоточность (<code>Thread</code>) обслуживает банковские серверы (<b>Spring Boot</b>) и используется для создания модов для <b>Minecraft</b>.</p>`
+   }
+  },
+  {n:'Kotlin',k:['kotlin'],h:0,w:'Android Studio, IntelliJ',a:'Kotlin Playground, Termux',i:'Online Playground',
+   d:{en:'Complete A4 encyclopedia of Kotlin: Null Safety, Coroutines & Jetpack Compose.',ru:'Полная энциклопедия Kotlin на лист А4: защита Null Safety, корутины и Jetpack Compose.'},
+   art:{
+     en:`<h3>1. Modern Android Standard</h3><p>100% interoperable with Java; <code>val</code> creates constants and <code>if / else</code> / <code>when</code> return values directly.</p><h3>2. Null Safety & Coroutines</h3><p>Built-in <b>Null Safety</b> (<code>?</code>) prevents app crashes, while <b>Coroutines</b> and <b>Jetpack Compose</b> build smooth Android UIs.</p>`,
+     ru:`<h3>1. Современный стандарт Android</h3><p>На 100% совместим с Java. <code>val</code> создаёт безопасную переменную, а <code>if / else</code> и <code>when</code> сразу возвращают результат.</p><h3>2. Защита от Null и корутины</h3><p>Встроенная <b>Null Safety</b> (<code>?</code>) спасает от вылетов, а <b>Coroutines</b> и <b>Jetpack Compose</b> позволяют создавать быстрые мобильные приложения.</p>`
+   }
+  }
+);
+DB.push(
+  {n:'Swift',k:['swift'],h:0,w:'Xcode (macOS)',a:'SwiftFiddle (Web)',i:'Swift Playgrounds',
+   d:{en:'Complete A4 encyclopedia of Swift: LLVM speed, Optionals & SwiftUI.',ru:'Полная энциклопедия Swift на лист А4: скорость LLVM, опционалы, память ARC и SwiftUI.'},
+   art:{
+     en:`<h3>1. Apple Ecosystem & LLVM</h3><p>Built on LLVM with ARC memory management; <code>let</code> defines constants and <code>if / else if / else</code> works without parentheses.</p><h3>2. Optionals & SwiftUI</h3><p><b>Optionals</b> (<code>?</code>) handle missing data safely, and <b>SwiftUI</b> builds declarative iOS/iPadOS screens.</p>`,
+     ru:`<h3>1. Экосистема Apple и LLVM</h3><p>Работает на базе компилятора LLVM с автоматической памятью ARC. <code>let</code> задаёт константу, а условия <code>if / else if / else</code> пишутся без круглых скобок.</p><h3>2. Опционалы и SwiftUI</h3><p>Опционалы (<code>?</code>) защищают от сбоев при отсутствии данных, а фреймворк <b>SwiftUI</b> строит интерфейсы для iPhone и iPad.</p>`
+   }
+  },
+  {n:'Dart',k:['dart','flutter'],h:0,w:'VS Code, Android Studio',a:'DartPad (Web), Termux',i:'DartPad (Web)',
+   d:{en:'Complete A4 encyclopedia of Dart & Flutter: Android, iOS & Web apps.',ru:'Полная энциклопедия Dart и Flutter на лист А4: единый код для Android, iOS, ПК и веба.'},
+   art:{
+     en:`<h3>1. Native ARM Compilation</h3><p>Compiles to native ARM machine code for 120 FPS mobile apps with <code>if / else if / else</code> and Sound Null Safety.</p><h3>2. Flutter Widget Tree</h3><p>With <b>Flutter</b>, everything on screen is a composable Dart widget rendered identically on Android and iOS.</p>`,
+     ru:`<h3>1. Кроссплатформенная сборка</h3><p>Компилируется в нативный ARM-код для плавных приложений (120 FPS), используя условия <code>if / else if / else</code> и строгую Null Safety.</p><h3>2. Дерево виджетов Flutter</h3><p>Во фреймворке <b>Flutter</b> весь интерфейс Android, iOS и веб-версии собирается из единых Dart-виджетов.</p>`
+   }
+  }
+);
+DB.push(
+  {n:'Go',k:['go','golang'],h:0,w:'VS Code, GoLand',a:'Termux (golang)',i:'Go Playground',
+   d:{en:'Complete A4 encyclopedia of Go (Golang): cloud servers, Docker & Goroutines.',ru:'Полная энциклопедия Go (Golang) на лист А4: облачные серверы, Docker и горутины.'},
+   art:{
+     en:`<h3>1. Cloud Servers & Docker</h3><p>Compiles in milliseconds into one binary powering Docker and Kubernetes; uses <code>:=</code>, <code>if / else if / else</code>, and <code>Slices</code>.</p><h3>2. Goroutines</h3><p><code>go func()</code> spawns 2KB micro-threads to handle millions of concurrent network connections.</p>`,
+     ru:`<h3>1. Облака и Docker</h3><p>Компилируется за доли секунды в один бинарный файл; использует короткое объявление <code>:=</code>, чистые условия <code>if / else if / else</code> и срезы (<code>Slices</code>).</p><h3>2. Горутины</h3><p>Микропотоки <b>Goroutines</b> (по 2 КБ памяти) позволяют одному серверу держать миллионы подключений.</p>`
+   }
+  },
+  {n:'Ruby',k:['ruby'],h:0,w:'VS Code, RubyMine',a:'Termux (ruby)',i:'Textastic, CodeSnack',
+   d:{en:'Complete A4 encyclopedia of Ruby & Ruby on Rails web startups.',ru:'Полная энциклопедия Ruby на лист А4: выразительный синтаксис и Ruby on Rails.'},
+   art:{
+     en:`<h3>1. Expressive Syntax & Ruby on Rails</h3><p>Reads like English using <code>if / elsif / else / end</code> without braces and iterators (<code>.each</code>, <code>.map</code>), powering startups like GitHub and Shopify.</p>`,
+     ru:`<h3>1. Выразительный синтаксис и Ruby on Rails</h3><p>Условия строятся через <code>if / elsif / else / end</code> без скобок, а итераторы <code>.each</code> и <code>.map</code> обрабатывают списки. Фреймворк <b>Ruby on Rails</b> запускает сайты уровня GitHub и Shopify.</p>`
+   }
+  },
+  {n:'Bash',k:['bash','sh','shell','linux'],h:0,w:'Linux Terminal, Git Bash',a:'Termux (Android terminal)',i:'iSH Shell, Blink Shell',
+   d:{en:'Complete A4 encyclopedia of Bash scripting for Linux & Termux.',ru:'Полная энциклопедия Bash на лист А4: автоматизация серверов Linux и Termux.'},
+   art:{
+     en:`<h3>1. Terminal Automation</h3><p>Controls Linux servers and Termux via <code>if [ ... ]; then ... elif ... else ... fi</code> and command pipes (<code>|</code>, <code>grep</code>, <code>awk</code>, <code>curl</code>).</p>`,
+     ru:`<h3>1. Автоматизация Linux и Termux</h3><p>Управляет серверами через условия <code>if [ ... ]; then ... elif ... else ... fi</code> и конвейеры команд (<code>|</code>, <code>grep</code>, <code>awk</code>, <code>curl</code>).</p>`
+   }
+  }
+);
+DB.push(
+  {n:'R',k:['r'],h:0,w:'RStudio Desktop, VS Code',a:'R Compiler (Web)',i:'R Analyst, Pythonista',
+   d:{en:'Complete A4 encyclopedia of R: statistics, Tidyverse & ggplot2.',ru:'Полная энциклопедия R на лист А4: статистика, таблицы data.frame и графики ggplot2.'},
+   art:{
+     en:`<h3>1. Statistical Computing & ggplot2</h3><p>Uses arrow assignment (<code>&lt;-</code>), 1-indexed vectors (<code>c()</code>), <code>if / else if / else</code>, <b>Tidyverse</b> data frames, <b>ggplot2</b> charts, and <b>Shiny</b> dashboards.</p>`,
+     ru:`<h3>1. Научная статистика и графики ggplot2</h3><p>Использует присваивание стрелкой <code>&lt;-</code>, векторы <code>c()</code>, условия <code>if / else if / else</code>, таблицы <code>data.frame</code> (<b>Tidyverse</b>), научные диаграммы <b>ggplot2</b> и дашборды <b>Shiny</b>.</p>`
+   }
+  },
+  {n:'Lua',k:['lua'],h:0,w:'VS Code, ZeroBrane Studio',a:'Termux (lua), QLua',i:'Codea, Textastic',
+   d:{en:'Complete A4 encyclopedia of Lua: Roblox Studio, game engines & LuaJIT.',ru:'Полная энциклопедия Lua на лист А4: создание игр в Roblox Studio и LuaJIT.'},
+   art:{
+     en:`<h3>1. Roblox Studio & LuaJIT Speed</h3><p>Embeds into <b>Roblox Studio</b> and WoW; uses <code>if ... then ... elseif ... else ... end</code>, universal 1-indexed Tables (<code>{}</code>), and fast <b>LuaJIT</b>.</p>`,
+     ru:`<h3>1. Игровые скрипты в Roblox Studio и LuaJIT</h3><p>Главный язык скриптов в <b>Roblox Studio</b> и WoW. Использует условия <code>if ... then ... elseif ... else ... end</code>, универсальные таблицы <code>{}</code> (индексация с 1) и быстрый компилятор <b>LuaJIT</b>.</p>`
+   }
+  },
+  {n:'Assembly',k:['asm','assembly'],h:1,w:'NASM, MASM, Visual Studio',a:'Termux + nasm/qemu',i:'iSH Shell',
+   d:{en:'Complete A4 encyclopedia of Assembly (x86/ARM): CPU registers & kernels.',ru:'Полная энциклопедия Assembly (x86/ARM) на лист А4: регистры процессора и ядра ОС.'},
+   art:{
+     en:`<h3>1. Direct CPU Registers & Jumps</h3><p>Maps 1-to-1 to processor opcodes (<code>MOV</code>, <code>ADD</code>, <code>CMP</code>, <code>JE</code>) and stack frames (<code>PUSH / POP</code>) for kernels and reverse engineering.</p>`,
+     ru:`<h3>1. Прямые регистры процессора и прыжки</h3><p>Команды <code>MOV</code>, <code>ADD</code>, <code>CMP</code> и условные прыжки <code>JE / JG</code> напрямую управляют регистрами CPU и стеком (<code>PUSH / POP</code>) в ядрах ОС и реверс-инжиниринге.</p>`
+   }
+  }
+);
+function setL(x){
+  L=x;const t=T[x]||T.en;
+  document.documentElement.dir=(x==='ar'?'rtl':'ltr');
+  document.getElementById('uT').innerText=t.t;document.getElementById('uF').innerText=t.f;
+  document.getElementById('uB').innerText=t.b;document.getElementById('uWH').innerText=t.wh;
+  document.getElementById('uD').innerText=t.d;
+  document.getElementById('hBar').innerText=H.length?t.h1+H.join(', '):t.h0;
+  if(document.getElementById('res').innerHTML)find();
+  if(document.getElementById('vL').style.display==='block'&&cur)rL();
+  if(document.getElementById('wM').style.display==='flex')updW();
+}
+function find(){
+  const v=document.getElementById('q').value.trim().toLowerCase(),res=document.getElementById('res'),t=T[L]||T.en;
+  if(!v){res.innerHTML='';return}
+  const i=DB.findIndex(x=>x.k.includes(v));
+  if(i<0){res.innerHTML=`<p style="color:#f87171;margin-top:10px">${t.nf}</p>`;return}
+  const o=DB[i],desc=o.d[L]||o.d.en;
+  res.innerHTML=`<div class="card"><h3>${o.n}</h3><p style="color:#cbd5e1;margin:8px 0 12px">${desc}</p><button class="btn btn-p" onclick="ask(${i})">${t.o}</button></div>`;
+}
+function ask(i){
+  tId=i;const o=DB[i];
+  if(o.h&&!H.some(x=>['C++','C#','C','Rust','Assembly'].includes(x))){
+    rId=(H.includes('Python')||H.includes('HTML'))?1:0;
+    updW();document.getElementById('wM').style.display='flex';return;
+  }
+  openL(i);
+}
+function updW(){
+  const o=DB[tId],r=DB[rId],t=T[L]||T.en;
+  document.getElementById('uWP').innerText=(H.includes('Python')||H.includes('HTML'))?t.wp.replace('{P}',H[H.length-1]).replace('{L}',o.n).replace('{R}',r.n):t.wn.replace('{L}',o.n).replace('{R}',r.n);
+  document.getElementById('uNo').innerText=t.no.replace('{R}',r.n);
+  document.getElementById('uYes').innerText=t.yes.replace('{L}',o.n);
+}
+function goTarget(){document.getElementById('wM').style.display='none';openL(tId)}
+function goRec(){document.getElementById('wM').style.display='none';openL(rId)}
+function openL(i){
+  cur=DB[i];if(!H.includes(cur.n))H.push(cur.n);
+  setL(L);document.getElementById('vS').style.display='none';document.getElementById('vL').style.display='block';rL();
+}
+function rL(){
+  const t=T[L]||T.en,o=cur,desc=o.d[L]||o.d.en,article=o.art[L]||o.art.en;
+  document.getElementById('lArea').innerHTML=`
+    <h1 style="color:#38bdf8;font-size:26px;margin-bottom:6px;border-bottom:2px solid #334155;padding-bottom:8px">${o.n}</h1>
+    <p style="color:#cbd5e1;font-size:15px;line-height:1.65;margin-bottom:12px">${desc}</p>
+    <div class="wiki">${article}</div>
+    <div style="border-top:2px solid #334155;margin-top:22px;padding-top:14px">
+      <b style="color:#c084fc;font-size:15px">${t.ap}</b>
+      <div class="apps">
+        <div class="appi"><b style="color:#38bdf8">${t.w}</b><br>${o.w}</div>
+        <div class="appi"><b style="color:#4ade80">${t.a}</b><br>${o.a}</div>
+        <div class="appi"><b style="color:#fbbf24">${t.i}</b><br>${o.i}</div>
+      </div>
+    </div>`;
+}
+function home(){cur=null;document.getElementById('vL').style.display='none';document.getElementById('vS').style.display='block';document.getElementById('q').value='';document.getElementById('res').innerHTML=''}
+function cp(id,btn){
+  const txt=document.getElementById(id).innerText;
+  const ta=document.createElement('textarea');
+  ta.value=txt;document.body.appendChild(ta);ta.select();
+  document.execCommand('copy');document.body.removeChild(ta);
+  if(navigator.clipboard)navigator.clipboard.writeText(txt).catch(()=>{});
+  const old=btn.innerText;btn.innerText='✓ Copied!';
+  setTimeout(()=>btn.innerText=old,1500);
+}
+function EXT(name,enAdd,ruAdd){
+  const o=DB.find(x=>x.n===name);
+  if(o){o.art.en+=enAdd;o.art.ru+=ruAdd;}
+}
+EXT('Python',
+`<h3>6. Memory Management, GIL & Generators</h3><p>CPython manages RAM via Reference Counting and cyclic Garbage Collection. Due to the Global Interpreter Lock (GIL), CPU-heavy tasks use <code>multiprocessing</code> while network tasks use <code>asyncio</code>. Generators (<code>yield</code>) stream gigabytes of data lazily without filling RAM.</p><h3>7. Decorators & Magic Methods</h3><p>Decorators (<code>@property</code>, <code>@dataclass</code>) extend functions and classes cleanly, while dunder methods (<code>__str__</code>, <code>__add__</code>) customize object behavior.</p>`,
+`<h3>6. Управление памятью, GIL и генераторы (yield)</h3><p>Внутри CPython память очищается подсчётом ссылок и сборщиком мусора. Из-за блокировки <b>GIL</b> тяжёлые вычисления на всех ядрах запускают через <code>multiprocessing</code>, а тысячи сетевых запросов — через асинхронность <code>asyncio</code>. Генераторы с ключевым словом <code>yield</code> позволяют обрабатывать огромные файлы построчно, не забивая оперативную память.</p><h3>7. Декораторы, дата-классы и магические методы</h3><p>Декораторы (<code>@property</code>, <code>@staticmethod</code>, <code>@dataclass</code>) добавляют классам и функциям новые возможности без переписывания кода, а магические методы (<code>__str__</code>, <code>__add__</code>) настраивают поведение ваших объектов.</p>`
+);
+EXT('Python',
+`<h3>8. Game Architecture with Pygame</h3><p>A 2D game in Pygame follows the Game Loop: <code>pygame.init()</code>, display surface setup, <code>Clock().tick(60)</code>, polling <code>pygame.event.get()</code>, updating sprites, checking <code>colliderect()</code> hitboxes, and flipping frames via <code>display.flip()</code>.</p><h3>9. Production Telegram Bots & AI Pipelines</h3><p>Bots use <b>aiogram 3</b> with Finite State Machines (FSM), inline keyboards, and PostgreSQL. In AI, <b>NumPy</b> accelerates matrix math, <b>Pandas</b> processes tables, <b>OpenCV</b> handles computer vision, and <b>PyTorch</b> trains deep neural networks on CUDA GPUs.</p>`,
+`<h3>8. Архитектура 2D-игр на Pygame (от окна до физики)</h3><p>Создание игры на <b>Pygame</b> строится по игровому циклу: инициализация <code>pygame.init()</code>, создание окна, фиксация кадров <code>Clock().tick(60)</code>, чтение нажатий клавиш через <code>pygame.event.get()</code>, движение спрайтов, проверка столкновений (<code>colliderect</code>) и отрисовка кадра через <code>display.flip()</code>.</p><h3>9. Профессиональные Telegram-боты (aiogram) и нейросети (PyTorch)</h3><p>Современные боты пишутся на асинхронном <b>aiogram 3</b> с машиной состояний (FSM), inline-кнопками и базами данных PostgreSQL/SQLite. В искусственном интеллекте <b>NumPy</b> ускоряет математику, <b>Pandas</b> анализирует таблицы, <b>OpenCV</b> распознаёт видео с камеры, а <b>PyTorch</b> обучает нейросети на видеокартах NVIDIA.</p>`
+);
+EXT('JavaScript',
+`<h3>5. Prototypes, Modules (ESM) & LocalStorage</h3><p>Underneath ES6 classes, JavaScript uses prototypal inheritance. Modern projects organize code via ES Modules (<code>import / export</code>) and store offline user progress in <code>localStorage</code> or <code>IndexedDB</code>.</p><h3>6. WebSockets, Canvas 2D & Three.js 3D</h3><p>Real-time multiplayer games and chats use <code>WebSockets</code>. HTML5 <code>&lt;canvas&gt;</code> with <code>requestAnimationFrame()</code> renders smooth 60-FPS 2D physics, while <b>Three.js</b> and <b>WebGL</b> render full 3D shaders in the browser.</p>`,
+`<h3>5. Прототипы, модули (import/export) и память браузера</h3><p>Под капотом классов ES6 в JavaScript работает прототипное наследование. Крупные проекты делятся на модули (<code>import / export</code>), а сохранения игр и настройки пользователя хранятся прямо в браузере через <code>localStorage</code> и базу <code>IndexedDB</code>.</p><h3>6. Игры на Canvas 2D, Three.js 3D и мультиплеер WebSockets</h3><p>Для онлайн-чатов и сетевых игр в реальном времени применяются <b>WebSockets</b>. Связка <code>&lt;canvas&gt;</code> и <code>requestAnimationFrame()</code> позволяет создавать плавные 2D-игры (60–120 FPS), а библиотеки <b>Three.js</b> и <b>Babylon.js</b> запускают полноценную 3D-графику с шейдерами прямо на сайте.</p>`
+);
+EXT('C++',
+`<h3>4. Multithreading, SIMD & Cache Locality</h3><p>Modern C++20 provides <code>std::thread</code>, <code>std::mutex</code>, and lock-free atomics to run physics and AI across all CPU cores simultaneously. Contiguous arrays (<code>std::vector</code>) maximize CPU L1/L2 cache hits.</p><h3>5. Unreal Engine 5 Architecture & Graphics APIs</h3><p>In <b>Unreal Engine 5</b>, C++ classes inherit from <code>AActor</code> and <code>UObject</code>, exposing variables to Blueprints via <code>UPROPERTY()</code>. C++ also drives low-level graphics APIs like <b>DirectX 12</b>, <b>Vulkan</b>, and <b>OpenGL</b>.</p>`,
+`<h3>4. Многопоточность, кэш процессора и оптимизация</h3><p>Современный стандарт C++20 включает <code>std::thread</code>, <code>std::mutex</code> и атомарные операции для распараллеливания физики и ИИ сразу на все ядра процессора. Непрерывное хранение данных в <code>std::vector</code> ускоряет работу за счёт попадания в сверхбыстрый L1/L2-кэш CPU.</p><h3>5. Внутреннее устройство Unreal Engine 5 и DirectX / Vulkan</h3><p>В <b>Unreal Engine 5</b> базовые игровые объекты наследуются от <code>AActor</code> и <code>UCharacter</code>, а макросы <code>UPROPERTY()</code> и <code>UFUNCTION()</code> связывают код C++ с визуальным редактором Blueprints. Также C++ управляет видеокартами через <b>DirectX 12</b>, <b>Vulkan</b> и <b>OpenGL</b>.</p>`
+);
+EXT('C#',
+`<h3>4. Structs vs Classes, Delegates & Reflection</h3><p>In C#, <code>class</code> allocates reference objects on the Heap, while <code>struct</code> allocates fast value types on the Stack—critical for zero-lag Unity frames. Reflection inspects types dynamically at runtime.</p><h3>5. Unity Physics, Coroutines & Multiplayer (Netcode)</h3><p>In <b>Unity</b>, C# controls <code>Rigidbody</code> physics in <code>FixedUpdate()</code>, sequences timed events via Coroutines (<code>IEnumerator / yield return</code>), and syncs multiplayer lobbies using <b>Mirror</b> or <b>Unity Netcode</b>.</p>`,
+`<h3>4. Классы vs Структуры и оптимизация сборки мусора</h3><p>В C# объекты <code>class</code> создаются в куче (Heap), а лёгкие структуры <code>struct</code> — в быстром стеке (Stack), что критически важно в играх на Unity, чтобы сборщик мусора не вызывал микрофризов экрана.</p><h3>5. Физика Unity, корутины и мультиплеер (Netcode)</h3><p>В движке <b>Unity</b> код на C# управляет физикой твёрдых тел (<code>Rigidbody</code>) внутри метода <code>FixedUpdate()</code>, строит таймеры и анимации через корутины (<code>IEnumerator / yield return</code>), а сетевой режим и лобби создаются на фреймворках <b>Photon</b>, <b>Mirror</b> и <b>Unity Netcode</b>.</p>`
+);
+EXT('HTML',
+`<h3>3. Accessibility (ARIA), Meta Tags & Web Storage</h3><p>Modern HTML5 uses <code>&lt;meta&gt;</code> tags for mobile viewports and SEO, <code>aria-*</code> attributes for screen readers, and native <code>&lt;dialog&gt;</code>, <code>&lt;details&gt;</code>, and <code>localStorage</code> APIs to build interactive web apps with minimal JavaScript.</p>`,
+`<h3>3. Доступность (ARIA), SEO-метатеги и современные теги</h3><p>Профессиональный HTML5 использует теги <code>&lt;meta&gt;</code> для адаптации под мобильные экраны и поисковики, атрибуты доступности <code>aria-*</code>, а также встроенные интерактивные элементы <code>&lt;dialog&gt;</code> (модальные окна) и <code>&lt;details&gt;</code> (раскрывающиеся списки).</p>`
+);
+EXT('CSS',
+`<h3>3. CSS Architecture (BEM), Clamp & Dark Mode</h3><p>Large projects organize styles using methodologies like <b>BEM</b> (<code>.card__title--active</code>), fluid typography with <code>clamp()</code>, backdrop blur filters (<code>backdrop-filter: blur(10px)</code>), and automatic dark/light themes via <code>@media (prefers-color-scheme: dark)</code>.</p>`,
+`<h3>3. Архитектура БЭМ, функция clamp() и тёмная тема</h3><p>В крупных проектах стили структурируют по методологии <b>БЭМ</b> (<code>.card__title--active</code>), используют плавные размеры шрифтов через <code>clamp()</code>, эффект матового стекла (<code>backdrop-filter: blur(10px)</code>) и автоматическое переключение тёмной темы через <code>prefers-color-scheme</code>.</p>`
+);
+EXT('TypeScript',
+`<h3>3. Type Guards, Utility Types & Strict Mode</h3><p>Enabling <code>"strict": true</code> in <code>tsconfig.json</code> eliminates null/undefined bugs. Custom Type Guards (<code>val is User</code>) and built-in utilities (<code>Record</code>, <code>Omit</code>, <code>ReturnType</code>) guarantee end-to-end type safety from database to UI.</p>`,
+`<h3>3. Строгий режим (strict), Type Guards и утилиты типов</h3><p>Включение режима <code>"strict": true</code> в файле <code>tsconfig.json</code> полностью защищает код от пустых значений. Проверки типов (Type Guards) и встроенные утилиты (<code>Record</code>, <code>Pick</code>, <code>Omit</code>) связывают типы данных от базы до интерфейса без ошибок.</p>`
+);
+EXT('PHP',
+`<h3>3. Composer, MVC Architecture & REST APIs</h3><p>Modern PHP uses the <b>Composer</b> dependency manager, PSR coding standards, and MVC architecture (Model-View-Controller) in <b>Laravel</b> to build secure authentication, payment webhooks, and high-speed REST APIs.</p>`,
+`<h3>3. Менеджер Composer, архитектура MVC и REST API</h3><p>Современная разработка на PHP строится через пакетный менеджер <b>Composer</b>, стандарты PSR и архитектуру MVC (Модель-Представление-Контроллер) во фреймворке <b>Laravel</b> для создания систем авторизации, приёма платежей и быстрых REST API.</p>`
+);
+EXT('SQL',
+`<h3>3. Window Functions, Subqueries & Query Optimization</h3><p>Advanced SQL analytics uses <b>Window Functions</b> (<code>ROW_NUMBER()</code>, <code>RANK() OVER (PARTITION BY ...)</code>) and Common Table Expressions (<code>WITH cte AS (...)</code>) to compute leaderboards and running totals without slow self-joins.</p>`,
+`<h3>3. Оконные функции, CTE и ускорение запросов</h3><p>Продвинутая аналитика в SQL использует <b>оконные функции</b> (<code>ROW_NUMBER()</code>, <code>RANK() OVER</code>) и временные таблицы (<code>WITH cte AS (...)</code>) для мгновенного расчёта рейтингов игроков, скользящих средних и финансовых отчётов по миллионам строк.</p>`
+);
+EXT('Dart',
+`<h3>3. State Management (Bloc / Riverpod) & Platform Channels</h3><p>Production Flutter apps manage complex screen states using <b>Riverpod</b> or <b>Bloc</b>, store offline data in Hive/SQLite, and call native Android (Kotlin) or iOS (Swift) hardware APIs via <b>MethodChannels</b>.</p>`,
+`<h3>3. Управление состоянием (Bloc / Riverpod) и нативный код</h3><p>Крупные приложения на Flutter управляют сложными экранами с помощью архитектур <b>Riverpod</b> или <b>Bloc</b>, хранят данные офлайн в SQLite и обращаются к камере или датчикам телефона через нативные каналы <b>MethodChannels</b>.</p>`
+);
+EXT('Ruby',
+`<h3>2. Metaprogramming, Gems & ActiveRecord ORM</h3><p>Ruby’s metaprogramming lets classes generate methods dynamically at runtime. Packaged via <b>RubyGems</b> and <b>Bundler</b>, Rails’ <b>ActiveRecord</b> ORM maps database tables directly to clean Ruby objects.</p>`,
+`<h3>2. Метапрограммирование, RubyGems и ActiveRecord ORM</h3><p>Гибкое метапрограммирование позволяет классам создавать методы прямо во время работы программы, а встроенная в Rails система <b>ActiveRecord</b> превращает таблицы базы данных в удобные объекты Ruby.</p>`
+);
+EXT('Bash',
+`<h3>2. Environment Variables, Cron Jobs & SSH Deployment</h3><p>System administrators use Bash scripts with exit codes (<code>$?</code>), environment variables (<code>export PATH</code>), <code>crontab</code> schedulers, and <code>ssh / scp</code> commands to deploy and monitor Linux servers automatically.</p>`,
+`<h3>2. Переменные окружения, планировщик Cron и SSH</h3><p>Системные администраторы используют скрипты Bash с кодами возврата (<code>$?</code>), переменными окружения (<code>export</code>), планировщиком задач <code>cron</code> и протоколом <code>ssh</code> для автоматического запуска и контроля Linux-серверов 24/7.</p>`
+);
+EXT('R',
+`<h3>2. Statistical Modeling, Hypothesis Testing & R Markdown</h3><p>R provides built-in linear/logistic regression (<code>lm()</code>, <code>glm()</code>), t-tests, ANOVA, and reproducible scientific reports via <b>R Markdown</b> and <b>Quarto</b>.</p>`,
+`<h3>2. Статистическое моделирование, регрессия и Quarto</h3><p>В R встроены мощные инструменты линейной и логистической регрессии (<code>lm()</code>, <code>glm()</code>), проверка научных гипотез и генерация интерактивных отчётов через <b>R Markdown</b> и <b>Quarto</b>.</p>`
+);
+EXT('Lua',
+`<h3>2. Metatables, Coroutines & Roblox Client-Server Model</h3><p>Lua’s <b>Metatables</b> (<code>__index</code>) implement custom object-oriented inheritance. In <b>Roblox Studio</b>, Lua separates client UI/input (<code>LocalScript</code>) from secure server game logic (<code>Script</code>) via <code>RemoteEvents</code>.</p>`,
+`<h3>2. Метатаблицы, корутины и клиент-сервер в Roblox Studio</h3><p>Механизм <b>метатаблиц</b> (<code>__index</code>) позволяет реализовать в Lua полноценное ООП. В <b>Roblox Studio</b> код делится на клиентский (<code>LocalScript</code> — управление и интерфейс игрока) и серверный (<code>Script</code> — защита от читеров и сохранение данных), которые общаются через <code>RemoteEvents</code>.</p>`
+);
+EXT('Assembly',
+`<h3>2. x86-64 vs ARM64, Syscalls & Reverse Engineering</h3><p>Modern 64-bit x86-64 (PC) and ARM64 (Android/iPhone/Apple Silicon) architectures pass function arguments in CPU registers (<code>RDI, RSI</code> / <code>X0, X1</code>) and invoke OS kernel services directly via <code>SYSCALL</code> / <code>SVC</code> instructions.</p>`,
+`<h3>2. Архитектуры x86-64 vs ARM64 и системные вызовы (SYSCALL)</h3><p>Современные 64-битные процессоры x86-64 (ПК) и ARM64 (смартфоны, планшеты и чипы Apple Silicon) передают аргументы функций напрямую через регистры (<code>RDI, RSI</code> или <code>X0, X1</code>) и обращаются к ядру операционной системы с помощью инструкций <code>SYSCALL</code> и <code>SVC</code>.</p>`
+);
+
+</script>
+</body>
+</html>
